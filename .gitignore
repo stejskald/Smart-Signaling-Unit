@@ -1,3 +1,6 @@
+### Added ###
+build/**
+.markdownlint.json 
 
 # Created by https://www.toptal.com/developers/gitignore/api/vscode,c++,visualstudiocode
 # Edit at https://www.toptal.com/developers/gitignore?templates=vscode,c++,visualstudiocode
