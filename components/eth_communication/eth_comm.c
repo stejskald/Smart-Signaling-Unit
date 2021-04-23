@@ -6,19 +6,6 @@
 #include "esp_netif_defaults.h"	// for netif assemble macros
 #include "eth_comm.h"			// for establishing ethernet communication
 
-#define OLIMEX_ESP32_POE_CONFIG
-#ifdef OLIMEX_ESP32_POE_CONFIG
-/**
- * @brief Ethernet Connection defines - Olimex ESP32-PoE configuration, same as for SSU
- * 
- */
-#define ETH_MDC_GPIO		(23) // Output to PHY
-#define ETH_MDIO_GPIO		(18) // Bidirectional
-#define ETH_PHY_RST_GPIO	(-1)
-#define ETH_PHY_ADDR		(0)
-#define ETH_PHY_POWER_PIN	(12)
-#endif
-
 static const char *TAG = "eth";
 
 void eth_event_handler(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data)
@@ -91,17 +78,18 @@ esp_netif_t *eth_start(void) {
 
 	/* Create MAC and PHY Instance */
 	eth_mac_config_t eth_mac_config = ETH_MAC_DEFAULT_CONFIG(); // apply default MAC configuration
-	eth_mac_config.smi_mdc_gpio_num = ETH_MDC_GPIO;
-	eth_mac_config.smi_mdio_gpio_num = ETH_MDIO_GPIO;
+	eth_mac_config.smi_mdc_gpio_num = CONFIG_ETH_MDC_GPIO;
+	eth_mac_config.smi_mdio_gpio_num = CONFIG_ETH_MDIO_GPIO;
 	esp_eth_mac_t *s_eth_mac = esp_eth_mac_new_esp32(&eth_mac_config); // create MAC instance
 
 	eth_phy_config_t eth_phy_config = ETH_PHY_DEFAULT_CONFIG(); // apply default PHY configuration
-	eth_phy_config.phy_addr = ETH_PHY_ADDR;
-	eth_phy_config.reset_gpio_num = ETH_PHY_RST_GPIO;
-	#ifdef OLIMEX_ESP32_POE_CONFIG // Olimex ESP32-PoE configuration
-		gpio_pad_select_gpio(ETH_PHY_POWER_PIN);
-		gpio_set_direction(ETH_PHY_POWER_PIN,GPIO_MODE_OUTPUT);
-		gpio_set_level(ETH_PHY_POWER_PIN, 1);
+	eth_phy_config.phy_addr = CONFIG_ETH_PHY_ADDR;
+	eth_phy_config.reset_gpio_num = CONFIG_ETH_PHY_RST_GPIO;
+	// Olimex ESP32-PoE configuration
+	#ifdef CONFIG_OLIMEX_ESP32_POE
+		gpio_pad_select_gpio(CONFIG_ETH_PHY_POWER_PIN);
+		gpio_set_direction(CONFIG_ETH_PHY_POWER_PIN,GPIO_MODE_OUTPUT);
+		gpio_set_level(CONFIG_ETH_PHY_POWER_PIN, 1);
 	#endif
 	esp_eth_phy_t *s_eth_phy = esp_eth_phy_new_lan8720(&eth_phy_config); // create PHY instance
 

@@ -126,6 +126,17 @@ CONFIG_PARTITION_TABLE_MD5=y
 # end of Partition Table
 
 #
+# Ethernet Communication Configuration
+#
+CONFIG_OLIMEX_ESP32_POE=y
+CONFIG_ETH_MDC_GPIO=23
+CONFIG_ETH_MDIO_GPIO=18
+CONFIG_ETH_PHY_RST_GPIO=-1
+CONFIG_ETH_PHY_ADDR=0
+CONFIG_ETH_PHY_POWER_PIN=12
+# end of Ethernet Communication Configuration
+
+#
 # Compiler options
 #
 CONFIG_COMPILER_OPTIMIZATION_DEFAULT=y
