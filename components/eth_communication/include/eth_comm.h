@@ -5,20 +5,8 @@
 extern "C" {
 #endif
 
-#include "esp_log.h"
-#include "esp_event.h"
-
-/**
- * @brief Ethernet Connection defines - Olimex ESP32-PoE configuration
- * 
- */
-#define ETH_MDC_GPIO		(23) // Output to PHY
-#define ETH_MDIO_GPIO		(18) // Bidirectional
-#define ETH_PHY_RST_GPIO	(-1)
-#define ETH_PHY_ADDR		(0)
-#define ETH_PHY_POWER_PIN	(12)
-
-#define ETH_TAG "ETH"
+#include "sdkconfig.h"	// for KConfig options
+#include "esp_event.h"	// for event handling
 
 /**
  * @brief Event handler for Ethernet events
@@ -28,7 +16,7 @@ extern "C" {
  * @param event_id 
  * @param event_data 
  */
-static void eth_event_handler(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data);
+void eth_event_handler(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data);
 
 /**
  * @brief Event handler for IP_EVENT_ETH_GOT_IP
@@ -38,27 +26,34 @@ static void eth_event_handler(void *arg, esp_event_base_t event_base, int32_t ev
  * @param event_id 
  * @param event_data 
  */
-static void got_ip_event_handler(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data);
+void got_ip_event_handler(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data);
+
+/**
+ * @brief Set up Ethernet connection
+ * 
+ * @return esp_netif_t* of created network interface for Ethernet
+ */
+esp_netif_t *eth_start(void);
 
 /**
  * @brief Configure Ethernet, connect, wait for IP
  * 
  * @return ESP_OK on successful connection
  */
-void eth_connect(void); // TODO: return esp_err_t
+esp_err_t eth_connect(void);
+
+/**
+ * @brief Tear down connection, release resources
+ * 
+ */
+void eth_stop(void);
 
 /**
  * @brief Counterpart to eth_connect, de-initialize Ethernet
  * 
+ * @return ESP_OK on successful disconnection
  */
-void eth_disconnect(void);
-
-/**
- * @brief Returns esp-netif pointer created by eth_connect()
- *
- * @note If multiple interfaces active at once, this API returns NULL
- */
-esp_netif_t *get_example_netif(void);
+esp_err_t eth_disconnect(void);
 
 #ifdef __cplusplus
 }
