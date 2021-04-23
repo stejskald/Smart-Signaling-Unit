@@ -1,9 +1,25 @@
-#include <stdio.h>
-#include "sdkconfig.h"
-#include "esp_log.h"
-#include "esp_event.h"
-#include "driver/gpio.h"
-#include "eth_comm.h"
+#include "sdkconfig.h"			// for KConfig options
+#include "esp_log.h"			// for logging functionalities
+#include "esp_event.h"			// for event handling
+#include "driver/gpio.h"		// for gpio port number and port mode defines
+#include "esp_eth.h"			// for Ethernet MAC and SPI-Ethernet support
+#include "esp_netif_defaults.h"	// for netif assemble macros
+#include "eth_comm.h"			// for establishing ethernet communication
+
+#define OLIMEX_ESP32_POE_CONFIG
+#ifdef OLIMEX_ESP32_POE_CONFIG
+/**
+ * @brief Ethernet Connection defines - Olimex ESP32-PoE configuration, same as for SSU
+ * 
+ */
+#define ETH_MDC_GPIO		(23) // Output to PHY
+#define ETH_MDIO_GPIO		(18) // Bidirectional
+#define ETH_PHY_RST_GPIO	(-1)
+#define ETH_PHY_ADDR		(0)
+#define ETH_PHY_POWER_PIN	(12)
+#endif
+
+static const char *TAG = "eth";
 
 void eth_event_handler(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data)
 {
@@ -14,54 +30,49 @@ void eth_event_handler(void *arg, esp_event_base_t event_base, int32_t event_id,
 	switch (event_id) {
 	case ETHERNET_EVENT_CONNECTED:
 		esp_eth_ioctl(eth_handle, ETH_CMD_G_MAC_ADDR, mac_addr);
-		ESP_LOGI(ETH_TAG, "Ethernet Link Up");
-		ESP_LOGI(ETH_TAG, "Ethernet HW Addr %02x:%02x:%02x:%02x:%02x:%02x",
+		ESP_LOGI(TAG, "Ethernet Link Up");
+		ESP_LOGI(TAG, "Ethernet HW Addr %02x:%02x:%02x:%02x:%02x:%02x",
 				 mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5]);
 		break;
 	case ETHERNET_EVENT_DISCONNECTED:
-		ESP_LOGI(ETH_TAG, "Ethernet Link Down");
+		ESP_LOGI(TAG, "Ethernet Link Down");
 		break;
 	case ETHERNET_EVENT_START:
-		ESP_LOGI(ETH_TAG, "Ethernet Started");
+		ESP_LOGI(TAG, "Ethernet Started");
 		break;
 	case ETHERNET_EVENT_STOP:
-		ESP_LOGI(ETH_TAG, "Ethernet Stopped");
+		ESP_LOGI(TAG, "Ethernet Stopped");
 		break;
 	default:
 		break;
 	}
 }
 
-static xSemaphoreHandle s_semph_get_ip_addrs;
+static esp_netif_t *s_esp_netif = NULL;
+static xSemaphoreHandle s_semph_get_ip_addr;
 
 void got_ip_event_handler(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data)
 {
 	ip_event_got_ip_t *event = (ip_event_got_ip_t *)event_data;
 	const esp_netif_ip_info_t *ip_info = &event->ip_info;
 
-	ESP_LOGI(ETH_TAG, "Ethernet Got IP Address");
-	ESP_LOGI(ETH_TAG, "~~~~~~~~~~~");
-	ESP_LOGI(ETH_TAG, "ETHIP:" IPSTR, IP2STR(&ip_info->ip));
-	ESP_LOGI(ETH_TAG, "ETHMASK:" IPSTR, IP2STR(&ip_info->netmask));
-	ESP_LOGI(ETH_TAG, "ETHGW:" IPSTR, IP2STR(&ip_info->gw));
-	ESP_LOGI(ETH_TAG, "~~~~~~~~~~~");
+	ESP_LOGI(TAG, "Ethernet Got IP Address");
+	ESP_LOGI(TAG, "Connected to %s", esp_netif_get_desc(s_esp_netif));
+	ESP_LOGI(TAG, "ETHIP:" IPSTR, IP2STR(&ip_info->ip));
+	ESP_LOGI(TAG, "ETHMASK:" IPSTR, IP2STR(&ip_info->netmask));
+	ESP_LOGI(TAG, "ETHGW:" IPSTR, IP2STR(&ip_info->gw));
 
-	xSemaphoreGive(s_semph_get_ip_addrs);
+	xSemaphoreGive(s_semph_get_ip_addr);
 }
 
 static esp_eth_handle_t s_eth_handle = NULL; // after driver installed, will get the handle of the driver
-static esp_netif_t *s_esp_netif = NULL;
 static esp_eth_mac_t *s_eth_mac = NULL;
 static esp_eth_phy_t *s_eth_phy = NULL;
 static void *s_eth_glue = NULL;
 
-/**
- * @brief Set up Ethernet connection
- * 
- */
-static esp_netif_t *eth_start(void) { // TODO: Why static - is it needed?
-
-	s_semph_get_ip_addrs = xSemaphoreCreateCounting(1, 0); // create semaphore if an interface is active
+esp_netif_t *eth_start(void) {
+	// TODO: Is this semaphore needed?
+	s_semph_get_ip_addr = xSemaphoreCreateCounting(1, 0); // create semaphore if an interface is active
 
 	// Create default event loop that running in background
 	ESP_ERROR_CHECK(esp_event_loop_create_default());
@@ -110,18 +121,18 @@ static esp_netif_t *eth_start(void) { // TODO: Why static - is it needed?
 
 esp_err_t eth_connect(void)
 {
-	if (s_semph_get_ip_addrs != NULL) {
+	if (s_semph_get_ip_addr != NULL) {
 		return ESP_ERR_INVALID_STATE;
 	}
 	s_esp_netif = eth_start();
 	ESP_ERROR_CHECK(esp_register_shutdown_handler(&eth_stop));
-	ESP_LOGI(ETH_TAG, "Waiting for IP address");
-	xSemaphoreTake(s_semph_get_ip_addrs, portMAX_DELAY);
+	ESP_LOGI(TAG, "Waiting for IP address");
+	xSemaphoreTake(s_semph_get_ip_addr, portMAX_DELAY);
 
 	return ESP_OK;
 }
 
-static void eth_stop(void)
+void eth_stop(void)
 {
 	ESP_ERROR_CHECK(esp_event_handler_unregister(IP_EVENT, IP_EVENT_ETH_GOT_IP, &got_ip_event_handler));
 	ESP_ERROR_CHECK(esp_eth_stop(s_eth_handle));
@@ -137,11 +148,11 @@ static void eth_stop(void)
 
 esp_err_t eth_disconnect(void)
 {
-    if (s_semph_get_ip_addrs == NULL) {
+    if (s_semph_get_ip_addr == NULL) {
         return ESP_ERR_INVALID_STATE;
     }
-    vSemaphoreDelete(s_semph_get_ip_addrs);
-    s_semph_get_ip_addrs = NULL;
+    vSemaphoreDelete(s_semph_get_ip_addr);
+    s_semph_get_ip_addr = NULL;
     eth_stop();
     ESP_ERROR_CHECK(esp_unregister_shutdown_handler(&eth_stop));
     return ESP_OK;
