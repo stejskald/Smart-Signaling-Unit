@@ -1,11 +1,14 @@
 #ifndef __MB_TCP_SERVER_H__
 #define __MB_TCP_SERVER_H__
+#include "sdkconfig.h"	// for KConfig options
+#include "nvs_flash.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include "sdkconfig.h"	// for KConfig options
+void nvs_flash_initialization(void);
+
 
 
 #ifdef __cplusplus

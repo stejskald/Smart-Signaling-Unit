@@ -1,12 +1,11 @@
 #ifndef __ETH_COMM_H__
 #define __ETH_COMM_H__
+#include "sdkconfig.h"	// for KConfig options
+#include "esp_event.h"	// for event handling
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include "sdkconfig.h"	// for KConfig options
-#include "esp_event.h"	// for event handling
 
 /**
  * @brief Event handler for Ethernet events

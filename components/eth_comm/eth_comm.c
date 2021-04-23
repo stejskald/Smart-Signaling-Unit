@@ -1,6 +1,7 @@
 #include "sdkconfig.h"			// for KConfig options
 #include "esp_log.h"			// for logging functionalities
 #include "esp_event.h"			// for event handling
+#include "esp_err.h"			// for error handling
 #include "driver/gpio.h"		// for gpio port number and port mode defines
 #include "esp_eth.h"			// for Ethernet MAC and SPI-Ethernet support
 #include "esp_netif_defaults.h"	// for netif assemble macros
