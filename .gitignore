@@ -1,6 +1,6 @@
 ### Added ###
 build/**
-.markdownlint.json 
+txt/**
 
 # Created by https://www.toptal.com/developers/gitignore/api/vscode,c++,visualstudiocode
 # Edit at https://www.toptal.com/developers/gitignore?templates=vscode,c++,visualstudiocode
@@ -46,7 +46,8 @@ build/**
 *.app
 
 ### VisualStudioCode ###
-.vscode/
+.vscode/*
+!.vscode/c_cpp_properties.json
 !.vscode/tasks.json
 !.vscode/launch.json
 *.code-workspace

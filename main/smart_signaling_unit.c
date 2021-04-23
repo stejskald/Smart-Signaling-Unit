@@ -5,11 +5,12 @@
 
 void app_main(void)
 {
+	nvs_flash_initialization();
+	
 	eth_connect();
 	// TODO: repair the unhandled exceptions during eth_disconnect()
 	// vTaskDelay(500);
 	// eth_disconnect();
 
-	// nvs_flash_initialization();
 
 }

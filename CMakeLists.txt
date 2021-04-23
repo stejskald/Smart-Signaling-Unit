@@ -14,7 +14,7 @@ set(EXTRA_COMPONENT_DIRS $ENV{IDF_PATH}/projects/smart_signaling_unit/components
 set(EXTRA_COMPONENT_DIRS $ENV{IDF_PATH}/projects/smart_signaling_unit/components/led_strip_ctrl)
 
 # This example uses an extra component for...
-#list(APPEND EXTRA_COMPONENT_DIRS $ENV{IDF_PATH}/...)
+#list(APPEND EXTRA_COMPONENT_DIRS $ENV{IDF_PATH}/projects/smart_signaling_unit/components/mb_tcp_server)
 
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 project(smart_signaling_unit)
