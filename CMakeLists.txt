@@ -5,13 +5,13 @@
 cmake_minimum_required(VERSION 3.5)
 
 # This component includes common functions for Ethernet communication
-set(EXTRA_COMPONENT_DIRS $ENV{IDF_PATH}/projects/smart_signaling_unit/components/eth_communication)
+set(EXTRA_COMPONENT_DIRS $ENV{IDF_PATH}/projects/smart_signaling_unit/components/eth_comm)
 
 # This component includes implementation of Modbus TCP Server
-set(EXTRA_COMPONENT_DIRS $ENV{IDF_PATH}/projects/smart_signaling_unit/components/modbus_tcp_server)
+set(EXTRA_COMPONENT_DIRS $ENV{IDF_PATH}/projects/smart_signaling_unit/components/mb_tcp_server)
 
 # This component includes implementation of LED strip (WS2812B) controller
-set(EXTRA_COMPONENT_DIRS $ENV{IDF_PATH}/projects/smart_signaling_unit/components/led_strip_controller)
+set(EXTRA_COMPONENT_DIRS $ENV{IDF_PATH}/projects/smart_signaling_unit/components/led_strip_ctrl)
 
 # This example uses an extra component for...
 #list(APPEND EXTRA_COMPONENT_DIRS $ENV{IDF_PATH}/...)
