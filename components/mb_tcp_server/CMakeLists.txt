@@ -1,2 +1,3 @@
 idf_component_register(SRCS "mb_tcp_server.c"
-                    INCLUDE_DIRS "include")
+                    INCLUDE_DIRS "include"
+                    REQUIRES nvs_flash)

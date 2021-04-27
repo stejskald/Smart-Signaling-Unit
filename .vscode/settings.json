@@ -1,3 +1,10 @@
 {
-  "C_Cpp.intelliSenseEngine": "Tag Parser"
+  /* C/C++ Intellisense settings */
+  "C_Cpp.intelliSenseEngine": "Tag Parser",
+
+  /* EPS-IDF settings */
+  "idf.portWin": "COM3",
+
+  /* Markdown settings */
+  "pandoc.htmlOptString": "--metadata title=Title"  // change Title to modify title of html document
 }

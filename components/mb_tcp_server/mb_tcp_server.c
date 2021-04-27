@@ -4,7 +4,7 @@
 #include "esp_log.h"		// for logging functionalities
 #include "nvs_flash.h"
 
-static const char *TAG = "mb_server";
+// static const char *TAG = "mb_server";
 
 void nvs_flash_initialization(void){
 	esp_err_t result = nvs_flash_init(); // NVS ... Non-volatile Storage
@@ -15,15 +15,15 @@ void nvs_flash_initialization(void){
 	ESP_ERROR_CHECK(result);
 }
 
-void mb_server_test(void){
-	esp_log_level_set(TAG, ESP_LOG_INFO); // Set UART log level
+// void mb_server_test(void){
+// 	esp_log_level_set(TAG, ESP_LOG_INFO); // Set UART log level
 
-	void *mbc_slave_handler = NULL;
-	ESP_ERROR_CHECK(mbc_slave_init_tcp(&mbc_slave_handler)); // Initialization of Modbus controller
+// 	void *mbc_slave_handler = NULL;
+// 	ESP_ERROR_CHECK(mbc_slave_init_tcp(&mbc_slave_handler)); // Initialization of Modbus controller
 
-	mb_param_info_t reg_info; // keeps the Modbus registers access information
-	mb_register_area_descriptor_t reg_area; // Modbus register area descriptor structure
+// 	mb_param_info_t reg_info; // keeps the Modbus registers access information
+// 	mb_register_area_descriptor_t reg_area; // Modbus register area descriptor structure
 
-	mb_communication_info_t comm_info = { 0 };
-	comm_info.ip_port = MB_TCP_PORT_NUMBER;
-}
+// 	mb_communication_info_t comm_info = { 0 };
+// 	comm_info.ip_port = MB_TCP_PORT_NUMBER;
+// }
