@@ -1,3 +1,7 @@
+/*=====================================================================================
+ * Description:
+ *   This is the main C file of the project Smart Signaling Unit.
+ *====================================================================================*/
 //#include <stdio.h>		// for standard Input/Output operations
 #include "sdkconfig.h"		// for KConfig options
 #include "eth_comm.h"		// for establishing ethernet communication
@@ -13,5 +17,5 @@ void app_main(void)
 	// vTaskDelay(500);
 	// eth_disconnect();
 
-
+	mb_server_test();
 }

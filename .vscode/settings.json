@@ -1,6 +1,7 @@
 {
   /* C/C++ Intellisense settings */
-	"C_Cpp.intelliSenseEngine": "Tag Parser",
+	//"C_Cpp.intelliSenseEngine": "Tag Parser",
+	"C_Cpp.intelliSenseEngine": "Default",
 	"files.associations": {
 		"mb_tcp_server.h": "c",
 		"nvs_flash.h": "c",
