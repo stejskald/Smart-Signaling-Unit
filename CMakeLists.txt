@@ -7,26 +7,12 @@ cmake_minimum_required(VERSION 3.5)
 # This component includes common functions for Ethernet communication
 set(EXTRA_COMPONENT_DIRS $ENV{IDF_PATH}/projects/smart_signaling_unit/components/eth_comm)
 
-# This component includes implementation of Modbus TCP Server
+# This component includes usage of Modbus TCP Server
 set(EXTRA_COMPONENT_DIRS $ENV{IDF_PATH}/projects/smart_signaling_unit/components/mb_tcp_server)
 
 # This component includes implementation of LED strip (WS2812B) controller
 set(EXTRA_COMPONENT_DIRS $ENV{IDF_PATH}/projects/smart_signaling_unit/components/led_strip_ctrl)
 
-# This example uses an extra component for...
-#list(APPEND EXTRA_COMPONENT_DIRS $ENV{IDF_PATH}/projects/smart_signaling_unit/components/mb_tcp_server)
 
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 project(smart_signaling_unit)
-
-
-
-
-#include_directories(include) # Setting the place, where are located header files (.h / .hpp)
-
-#set(SRC # Variable SRC equals to the following source files (.c / .cpp)
-#    main/smart_signaling_unit.c)
-
-#add_executable(smart_signaling_unit ${SRC}) # Creates binary file named smart_signaling_unit, ${SRC} expands defined variable SRC
-
-#target_link_libraries(smart_signaling_unit)

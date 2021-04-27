@@ -1,3 +1,14 @@
+/**
+ * @file eth_comm.h
+ * @author David Stejskal (xstejs30@stud.feec.vutbr.cz)
+ * @brief Implementation of common functions for Ethernet communication.
+ * @version 0.1
+ * @date 2021-04-27
+ * 
+ * @copyright Copyright (c) 2021
+ * 
+ */
+
 #ifndef __ETH_COMM_H__
 #define __ETH_COMM_H__
 #include "sdkconfig.h"	// for KConfig options

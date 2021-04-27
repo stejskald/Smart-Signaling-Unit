@@ -1,15 +1,17 @@
 {
   /* C/C++ Intellisense settings */
-  "C_Cpp.intelliSenseEngine": "Tag Parser",
+	"C_Cpp.intelliSenseEngine": "Tag Parser",
+	"files.associations": {
+		"mb_tcp_server.h": "c",
+		"nvs_flash.h": "c",
+		"mbcontroller.h": "c",
+		"modbus_params.h": "c"
+	},
 
-  /* EPS-IDF settings */
-  "idf.portWin": "COM3",
+	/* EPS-IDF settings */
+	"idf.portWin": "COM3",
 
-  /* Markdown settings */
-  "pandoc.htmlOptString": "--metadata title=Title",
-  "files.associations": {
-    "mb_tcp_server.h": "c",
-    "nvs_flash.h": "c",
-    "esp_modbus_slave.h": "c"
-  } // change Title to modify title of html document
+	/* Markdown settings */
+	"pandoc.htmlOptString": "--metadata title=Title",
+	"git.ignoreLimitWarning": true // change Title to modify title of html document
 }
