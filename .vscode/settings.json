@@ -6,5 +6,10 @@
   "idf.portWin": "COM3",
 
   /* Markdown settings */
-  "pandoc.htmlOptString": "--metadata title=Title"  // change Title to modify title of html document
+  "pandoc.htmlOptString": "--metadata title=Title",
+  "files.associations": {
+    "mb_tcp_server.h": "c",
+    "nvs_flash.h": "c",
+    "esp_modbus_slave.h": "c"
+  } // change Title to modify title of html document
 }

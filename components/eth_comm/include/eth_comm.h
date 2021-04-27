@@ -54,6 +54,13 @@ void eth_stop(void);
  */
 esp_err_t eth_disconnect(void);
 
+/**
+ * @brief Get the netif object
+ * 
+ * @return esp_netif_t* 
+ */
+esp_netif_t *get_netif(void);
+
 #ifdef __cplusplus
 }
 #endif

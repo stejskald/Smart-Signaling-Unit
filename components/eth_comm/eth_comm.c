@@ -146,3 +146,8 @@ esp_err_t eth_disconnect(void)
     ESP_ERROR_CHECK(esp_unregister_shutdown_handler(&eth_stop));
     return ESP_OK;
 }
+
+esp_netif_t *get_netif(void)
+{
+    return s_esp_netif;
+}

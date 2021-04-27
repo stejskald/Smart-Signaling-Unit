@@ -1,3 +1,4 @@
+//#include <stdio.h>		// for standard Input/Output operations
 #include "sdkconfig.h"		// for KConfig options
 #include "eth_comm.h"		// for establishing ethernet communication
 #include "mb_tcp_server.h"	// for Modbus TCP Server
