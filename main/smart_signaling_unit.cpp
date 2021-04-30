@@ -11,7 +11,6 @@
 /* The app_main entry point must have C linkage. Thus extern "C". */
 extern "C" void app_main(void)
 {
-	size_t size = sizeof(float) << 2;
 	nvs_flash_initialization();
 	
 	eth_connect();
