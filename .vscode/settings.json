@@ -2,12 +2,6 @@
   /* C/C++ Intellisense settings */
 	//"C_Cpp.intelliSenseEngine": "Tag Parser",
 	"C_Cpp.intelliSenseEngine": "Default",
-	"files.associations": {
-		"mb_tcp_server.h": "c",
-		"nvs_flash.h": "c",
-		"mbcontroller.h": "c",
-		"modbus_params.h": "c"
-	},
 
 	/* EPS-IDF settings */
 	"idf.portWin": "COM3",
