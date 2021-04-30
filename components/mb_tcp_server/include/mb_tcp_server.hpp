@@ -1,13 +1,10 @@
 /*=====================================================================================
  * Description:
- *   H file to ...
+ *   Hpp file to ...
  *====================================================================================*/
-#ifndef __MB_TCP_SERVER_H__
-#define __MB_TCP_SERVER_H__
-
-#ifdef __cplusplus
-extern "C" {
-#endif
+#ifndef __MB_TCP_SERVER_HPP__
+#define __MB_TCP_SERVER_HPP__
+#include "modbus_data_types.hpp"
 
 /**
  * @brief Set up the register values into known state
@@ -38,8 +35,4 @@ void mb_reg_init(void);
  */
 void mb_server_test(void);
 
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* __MB_TCP_SERVER_H__ */
+#endif /* __MB_TCP_SERVER_HPP__ */
