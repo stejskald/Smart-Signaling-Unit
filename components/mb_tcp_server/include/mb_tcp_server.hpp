@@ -7,10 +7,29 @@
 #include "modbus_data_types.hpp"
 
 /**
+ * @brief Initialization of Modbus TCP server
+ * 
+ */
+void mb_server_init(void);
+
+/**
  * @brief Set up the register values into known state
  * 
  */
 void setup_reg_data(void);
+
+/**
+ * @brief Modbus TCP server operation
+ * 
+ * @param arg 
+ */
+void mb_server_operation(void *arg);
+
+/**
+ * @brief Stop the Modbus TCP server
+ * 
+ */
+void mb_server_stop(void);
 
 /**
  * @brief Initialization of NVS Flash
@@ -18,21 +37,32 @@ void setup_reg_data(void);
  */
 void nvs_flash_initialization(void);
 
-/**
- * @brief Initialization of Modbus register area descriptors for Modbus Holding Registers, Input Registers,
- * Coils and Discrete Inputs.
- * 
- * Initialization should be done for each supported Modbus register area according
- * to register map. When external master trying to access the register in the area that is not initialized
- * by mbc_slave_set_descriptor() API call, then Modbus stack will send exception response for this register area.
- * 
- */
-void mb_reg_init(void);
 
-/**
- * @brief Test functionality of mb_server
- * 
- */
-void mb_server_test(void);
+
+// /**
+// * @brief Modbus event declarations
+// *
+// */
+// enum class EMb_event_t : uint32_t
+// {
+//     MODBUS_EVENT_START,		/*!< Modbus driver start */
+//     MODBUS_EVENT_STOP		/*!< Modbus driver stop */
+// };
+
+// /**
+//  * @brief Event handler for Modbus events
+//  * 
+//  * @param arg 
+//  * @param event_base 
+//  * @param event_id 
+//  * @param event_data 
+//  */
+// void mb_event_handler(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data);
+
+// /**
+// * @brief Modbus event base declaration
+// *
+// */
+// ESP_EVENT_DECLARE_BASE(MB_EVENT);
 
 #endif /* __MB_TCP_SERVER_HPP__ */

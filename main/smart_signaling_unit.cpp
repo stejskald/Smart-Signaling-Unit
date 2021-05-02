@@ -11,12 +11,13 @@
 /* The app_main entry point must have C linkage. Thus extern "C". */
 extern "C" void app_main(void)
 {
+	eth_connect();
+
 	nvs_flash_initialization();
 	
-	eth_connect();
+	xTaskCreate(mb_server_operation, "mb_tcp_server_task", 8192, NULL, 20, NULL);
+
 	// TODO: repair the unhandled exceptions during eth_disconnect()
 	// vTaskDelay(500);
 	// eth_disconnect();
-
-	mb_server_test();
 }

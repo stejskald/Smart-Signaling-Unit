@@ -19,11 +19,15 @@
  * @version 0.1
  */
 
+// namespace CModbus_params
+// {
+
 // #pragma pack(1) ensure that the compiler does not insert padding into the data, each member follows the previous one
 #pragma pack(push, 1)
 class Cmb_holding_registers // Modbus Holding Registers
 {
 	public:
+	// TODO edit following
 	CConfiguration_t holding_reg_data0;	// Running mode configuration
 	CState_t holding_reg_data1;			// Displaying state
 	CRgb_565_t holding_reg_data2;		// Color
@@ -34,35 +38,21 @@ class Cmb_holding_registers // Modbus Holding Registers
 #pragma pack(push, 1)
 typedef struct
 {
-	// TODO edit following
-	// uint16_t configuration_t;	// Running mode configuration
-	// uint16_t state_t;			// Displaying state
-	// uint16_t rgb_565_t;			// Color
-	// uint16_t animation_t;		// Color of the animation ???
-	// uint16_t animation_t;		// Animation of the state ???
-
-	float holding_data0;
-	float holding_data1;
-	float holding_data2;
-	float holding_data3;
-	uint16_t test_regs[150];
-	float holding_data4;
-	float holding_data5;
-	float holding_data6;
-	float holding_data7;
+	uint32_t holding_data0;
+	uint32_t holding_data1;
+	uint32_t holding_data2;
+	uint32_t holding_data3;
+	float test_regs[150];
+	uint32_t holding_data4;
+	uint32_t holding_data5;
+	uint32_t holding_data6;
+	uint32_t holding_data7;
 } holding_reg_params_t;
 #pragma pack(pop)
 
 // non-const global variable declaration, defined in modbus_params.cpp
 extern holding_reg_params_t holding_reg_params;
 
-
-
-
-// namespace CModbus_params
-// {
-
 // } /* namespace CModbus_params */
-
 
 #endif // !defined(_DEVICE_PARAMS)
