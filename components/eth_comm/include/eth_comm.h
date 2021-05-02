@@ -1,12 +1,22 @@
+/**
+ * @file eth_comm.h
+ * @author David Stejskal (xstejs30@stud.feec.vutbr.cz)
+ * @brief Implementation of common functions for Ethernet communication.
+ * @version 0.1
+ * @date 2021-04-27
+ * 
+ * @copyright Copyright (c) 2021
+ * 
+ */
+
 #ifndef __ETH_COMM_H__
 #define __ETH_COMM_H__
+#include "sdkconfig.h"	// for KConfig options
+#include "esp_event.h"	// for event handling
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include "sdkconfig.h"	// for KConfig options
-#include "esp_event.h"	// for event handling
 
 /**
  * @brief Event handler for Ethernet events
@@ -54,6 +64,13 @@ void eth_stop(void);
  * @return ESP_OK on successful disconnection
  */
 esp_err_t eth_disconnect(void);
+
+/**
+ * @brief Get the netif object
+ * 
+ * @return esp_netif_t* 
+ */
+esp_netif_t *get_netif(void);
 
 #ifdef __cplusplus
 }

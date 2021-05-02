@@ -1,6 +1,7 @@
 #include "sdkconfig.h"			// for KConfig options
 #include "esp_log.h"			// for logging functionalities
 #include "esp_event.h"			// for event handling
+#include "esp_err.h"			// for error handling
 #include "driver/gpio.h"		// for gpio port number and port mode defines
 #include "esp_eth.h"			// for Ethernet MAC and SPI-Ethernet support
 #include "esp_netif_defaults.h"	// for netif assemble macros
@@ -144,4 +145,9 @@ esp_err_t eth_disconnect(void)
     eth_stop();
     ESP_ERROR_CHECK(esp_unregister_shutdown_handler(&eth_stop));
     return ESP_OK;
+}
+
+esp_netif_t *get_netif(void)
+{
+    return s_esp_netif;
 }

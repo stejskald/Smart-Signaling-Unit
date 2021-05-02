@@ -1,0 +1,18 @@
+{
+  /* C/C++ Intellisense settings */
+	//"C_Cpp.intelliSenseEngine": "Tag Parser",
+	"C_Cpp.intelliSenseEngine": "Default",
+
+	/* EPS-IDF settings */
+	"idf.portWin": "COM7",
+
+	/* Markdown settings */
+	"pandoc.htmlOptString": "--metadata title=Title",
+	"git.ignoreLimitWarning": true,
+	"files.associations": {
+		"eth_comm.h": "c",
+		"*.ipp": "cpp",
+		"*.tcc": "cpp",
+		"cstdlib": "cpp"
+	} // change Title to modify title of html document
+}
