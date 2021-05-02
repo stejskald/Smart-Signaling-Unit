@@ -59,8 +59,6 @@ static const char *TAG = "mb_server";
 // 	}
 // }
 
-static mb_register_area_descriptor_t reg_area;	// Modbus registers area descriptor structure
-
 /* Initialization of Modbus register area descriptor for Modbus Holding Registers */
 void mb_server_init(void)
 {
@@ -86,6 +84,7 @@ void mb_server_init(void)
 	 * to register map. When external master trying to access the register in the area that is not initialized
 	 * by mbc_slave_set_descriptor() API call, then Modbus stack will send exception response for this register area.
 	 */
+	mb_register_area_descriptor_t reg_area;	// Modbus registers area descriptor structure
 	// Initialization of Holding Registers area0
 	reg_area.type = MB_PARAM_HOLDING;					// Set type of register area
 	reg_area.start_offset = MB_REG_HOLDING_START_AREA0;	// Offset of register area in Modbus protocol
