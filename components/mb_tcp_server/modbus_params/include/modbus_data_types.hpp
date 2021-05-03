@@ -48,7 +48,7 @@ class CConfiguration_t
 class CState_t
 {
 	public:
-		uint8_t state;
+		uint8_t state_id;
 };
 
 #pragma pack(push, 1)
