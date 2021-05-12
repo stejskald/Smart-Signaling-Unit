@@ -13,6 +13,8 @@
 		"eth_comm.h": "c",
 		"*.ipp": "cpp",
 		"*.tcc": "cpp",
-		"cstdlib": "cpp"
+		"cstdlib": "cpp",
+		"iostream": "cpp",
+		"ostream": "cpp"
 	} // change Title to modify title of html document
 }

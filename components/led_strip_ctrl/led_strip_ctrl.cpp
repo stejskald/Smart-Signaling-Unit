@@ -1,3 +1,5 @@
+#include <stdint.h>
+#include <string>
 #include "esp_log.h"			// for logging functionalities
 #include "driver/rmt.h"			// https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/peripherals/rmt.html
 #include "led_strip.h"			// for led strip WS2812 control
@@ -5,7 +7,8 @@
 #include "ascii_table_5x7.h"	// for 5x7 ASCII characters table
 
 
-static const char *TAG = "Digital RGB LED Strips WS2812B Control - RMT"; // RMT - Remote Control
+const char *TAG = "WS2812B RMT"; // RMT - Remote Control
+const std::string text = "Hello world! It's the 4th of May today! \\m/";
 
 // defining of RMT TX channels 0-6
 #define RMT_TX_CHANNEL0 RMT_CHANNEL_0
@@ -25,7 +28,8 @@ static const char *TAG = "Digital RGB LED Strips WS2812B Control - RMT"; // RMT 
 #define RMT_CH5_TX_GPIO 2  // 8,  pin 2  is for Olimex ESP32-PoE Rev.B
 #define RMT_CH6_TX_GPIO 5  // 15, pin 5  is for Olimex ESP32-PoE Rev.B
 
-#define STRIP_LED_NUMBER 36 // 36
+#define STRIPS_NUMBER 7
+#define STRIP_LEDS_NUMBER 36
 // TODO Remove in final implementation
 #define CHASE_SPEED_MS	(30) // by changing this value can be set the speed of chasing light
 
@@ -81,44 +85,61 @@ void led_strip_hsv2rgb(uint32_t h, uint32_t s, uint32_t v, uint32_t *r, uint32_t
 	}
 }
 
-static led_strip_t *led_strip_ch0 = nullptr;
-static led_strip_t *led_strip_ch1 = nullptr;
-static led_strip_t *led_strip_ch2 = nullptr;
-static led_strip_t *led_strip_ch3 = nullptr;
-static led_strip_t *led_strip_ch4 = nullptr;
-static led_strip_t *led_strip_ch5 = nullptr;
-static led_strip_t *led_strip_ch6 = nullptr;
+led_strip_t *led_strip_ch0 = nullptr;
+// led_strip_t *led_strip_ch1 = nullptr;
+// led_strip_t *led_strip_ch2 = nullptr;
+// led_strip_t *led_strip_ch3 = nullptr;
+// led_strip_t *led_strip_ch4 = nullptr;
+// led_strip_t *led_strip_ch5 = nullptr;
+// led_strip_t *led_strip_ch6 = nullptr;
 
 void led_strips_init(void)
 {
 	/* Init the RMT peripheral and LED strip configuration */
-	led_strip_t *led_strip_ch0 = led_strip_init(RMT_CH0_TX_GPIO, RMT_TX_CHANNEL0, STRIP_LED_NUMBER);
-	led_strip_t *led_strip_ch1 = led_strip_init(RMT_CH1_TX_GPIO, RMT_TX_CHANNEL1, STRIP_LED_NUMBER);
-	led_strip_t *led_strip_ch2 = led_strip_init(RMT_CH2_TX_GPIO, RMT_TX_CHANNEL2, STRIP_LED_NUMBER);
-	led_strip_t *led_strip_ch3 = led_strip_init(RMT_CH3_TX_GPIO, RMT_TX_CHANNEL3, STRIP_LED_NUMBER);
-	led_strip_t *led_strip_ch4 = led_strip_init(RMT_CH4_TX_GPIO, RMT_TX_CHANNEL4, STRIP_LED_NUMBER);
-	led_strip_t *led_strip_ch5 = led_strip_init(RMT_CH5_TX_GPIO, RMT_TX_CHANNEL5, STRIP_LED_NUMBER);
-	led_strip_t *led_strip_ch6 = led_strip_init(RMT_CH6_TX_GPIO, RMT_TX_CHANNEL6, STRIP_LED_NUMBER);
+	led_strip_t *led_strip_ch0 = led_strip_init(RMT_CH0_TX_GPIO, RMT_TX_CHANNEL0, STRIP_LEDS_NUMBER);
+	// led_strip_t *led_strip_ch1 = led_strip_init(RMT_CH1_TX_GPIO, RMT_TX_CHANNEL1, STRIP_LEDS_NUMBER);
+	// led_strip_t *led_strip_ch2 = led_strip_init(RMT_CH2_TX_GPIO, RMT_TX_CHANNEL2, STRIP_LEDS_NUMBER);
+	// led_strip_t *led_strip_ch3 = led_strip_init(RMT_CH3_TX_GPIO, RMT_TX_CHANNEL3, STRIP_LEDS_NUMBER);
+	// led_strip_t *led_strip_ch4 = led_strip_init(RMT_CH4_TX_GPIO, RMT_TX_CHANNEL4, STRIP_LEDS_NUMBER);
+	// led_strip_t *led_strip_ch5 = led_strip_init(RMT_CH5_TX_GPIO, RMT_TX_CHANNEL5, STRIP_LEDS_NUMBER);
+	// led_strip_t *led_strip_ch6 = led_strip_init(RMT_CH6_TX_GPIO, RMT_TX_CHANNEL6, STRIP_LEDS_NUMBER);
 }
 
-// TODO 5x7 ASCII table for a scrolling LED Matrix display
 // Obtain the symbol data from the font lookup table - ascii_tab_5x7[96][7].
 // The table contains fonts for char codes 0x20 (space) to 0x7f (DEL).
-void load_symbol(uint16_t symbol_hex_code)
+void load_symbol(const uint8_t aSymbol_hex_code)
 {
-	// Normalise the ASCII code
-	if(symbol_hex_code >= 0x20 && symbol_hex_code < 0x80)
-		symbol_hex_code -= 0x20;
-	// DEL symbol after ASCII normalization if the symbol_hex_code is out of font table range
-	else
-		symbol_hex_code = 0x5f;
+	// // Normalise the ASCII code
+	// if(aSymbol_hex_code >= 0x20 && aSymbol_hex_code < 0x80)
+	// 	aSymbol_hex_code -= 0x20;
+	// // DEL symbol after ASCII normalization if the aSymbol_hex_code is out of font table range
+	// else
+	// 	aSymbol_hex_code = 0x5f;
+
+	// TODO Get the symbol data from the table
+	
+	// return ...;
 }
 
-// rgb_pixel_t disp_buffer[72][7]
+// Display buffer with double strips' lenght
+CRgb_pixel_t disp_buffer[2 * STRIP_LEDS_NUMBER][STRIPS_NUMBER];
+
+void fill_disp_buffer(CRgb_pixel_t *aDisp_buffer)
+{
+	// char symbol = 0x23;
+	// load_symbol(symbol);
+
+	// aDisp_buffer = ...
+}
+
+void update_strips_from_disp_buffer(void)
+{
+	;
+}
 
 void led_strip_matrix_disp_ctrl(void)
 {
-	;
+	// char c = text.at(1);
 }
 
 
@@ -139,9 +160,9 @@ void chasing_light_example(void){
 	ESP_LOGI(TAG, "LED Rainbow Chase Start");
 	while (true) {
 		for (int i = 0; i < 3; i++) {
-			for (int j = i; j < STRIP_LED_NUMBER; j += 3) {
+			for (int j = i; j < STRIP_LEDS_NUMBER; j += 3) {
 				// Build RGB values
-				hue = j * 360 / STRIP_LED_NUMBER + start_rgb;
+				hue = j * 360 / STRIP_LEDS_NUMBER + start_rgb;
 				led_strip_hsv2rgb(hue, 100, 100, &red, &green, &blue);
 				// Write RGB values to strip driver
 				ESP_ERROR_CHECK(led_strip_ch0->set_pixel(led_strip_ch0, j, red, green, blue));
