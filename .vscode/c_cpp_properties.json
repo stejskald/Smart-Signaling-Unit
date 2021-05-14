@@ -2,7 +2,7 @@
     "configurations": [
         {
             "name": "ESP-IDF",
-            "compilerPath": "c:\\Users\\xstejs30\\esp\\esp-idf\\tools\\tools\\xtensa-esp32-elf\\esp-2020r3-8.4.0\\xtensa-esp32-elf\\bin\\xtensa-esp32-elf-g++.exe", // xtensa-esp32-elf-gcc.exe
+            "compilerPath": "c:\\Users\\xstejs30\\esp\\esp-idf\\tools\\tools\\xtensa-esp32-elf\\esp-2020r3-8.4.0\\xtensa-esp32-elf\\bin\\xtensa-esp32-elf-g++.exe",
             "cStandard": "c11",
             "cppStandard": "c++17",
             "compileCommands": "${workspaceFolder}/build/compile_commands.json",
