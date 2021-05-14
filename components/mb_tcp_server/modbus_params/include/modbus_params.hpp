@@ -61,7 +61,7 @@ class Cmb_holding_registers // Modbus Holding Registers
 #pragma pack(pop)
 
 // non-const global variable declaration, defined in modbus_params.cpp
-extern Cmb_holding_registers holding_reg_params;
+extern Cmb_holding_registers mb_holding_registers;
 
 
 

@@ -34,7 +34,6 @@
 #define MB_READ_WRITE_MASK		(MB_READ_MASK | MB_WRITE_MASK)
 
 static const char *TAG = "mb_server";
-static Cmb_holding_registers mb_holding_registers;
 
 // void mb_event_handler(void *arg, esp_event_base_t event_base, EMb_event_t event_id, void *event_data)
 // {
