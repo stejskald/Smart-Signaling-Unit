@@ -6,13 +6,6 @@
 const uint8_t STRIPS_NUMBER = 7;
 const uint8_t STRIP_LEDS_NUMBER = 36;
 
-// /**
-//  * @brief Pointer to array of (STRIPS_NUMBER) pointers to uint8_t
-//  * 
-//  * @return typedef* 
-//  */
-// typedef uint8_t *(*p_symbol_data_t)[STRIPS_NUMBER];
-
 /**
  * @brief Display RGB pixel coded 8:8:8
  * 
@@ -26,7 +19,7 @@ typedef struct
 
 class display_driver
 {
-public:
+public: // public methods
 	/**
 	 * @brief Obtain the symbol data from the font table - ascii_tab_5x7[256][7].
 	 * 	The table contains fonts for symbol codes from 0x20 (space) to 0x7f (✓).
@@ -40,7 +33,7 @@ public:
 	 * @param aColor 
 	 * @param aPosition 
 	 */
-	void Disp_letter(const char aSymbol, rgb888_pixel_t aColor, uint8_t aPosition);
+	void Disp_letter(const char &aSymbol, const rgb888_pixel_t &aColor, const uint8_t &aPosition);
 
 
 
@@ -49,15 +42,7 @@ public:
 		// Rotate_text (dir)
 
 
-	// Led_strip_driver_task(){
-	// 	for ... // go through rows
-	// 	{
-	// 		for ... // write at desired position (pixel)
-	// 		{
-	// 			;
-	// 		}
-	// 	}
-	// }
+	// Led_strip_driver_task()
 
 
 
@@ -89,7 +74,13 @@ public:
 	//  */
 	// void Led_strip_hsv2rgb(uint32_t h, uint32_t s, uint32_t v, uint32_t *r, uint32_t *g, uint32_t *b);
 
-private:
+private: // private methods
+
+	// display_driver::Get_symbol_data(const char &aSymbol) const;
+
+public: // public data
+
+private: // private data
 	/**
 	 * @brief Frame buffer with height equal to count of strips and width of double strips' length.
 	 * 	Store the data for display driver.

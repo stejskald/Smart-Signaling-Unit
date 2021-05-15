@@ -24,11 +24,11 @@ extern "C" void app_main(void)
 	// xTaskCreate(mb_server_operation, "mb_tcp_server_task", 8192, NULL, 20, &mb_server_task_handle);
 
 
-	const char symbol = '@';
-	rgb888_pixel_t color = {0x00, 0xff, 0x00};
+	const char symbol = '8';
+	rgb888_pixel_t color = {0x11, 0x00, 0x00};
+	uint8_t position = 1;
 
 	display_driver display_driver;
-	// display_driver.Led_strips_init();
-	display_driver.Disp_letter(symbol,color,0);
+	display_driver.Disp_letter(symbol, color, position);
 
 }
