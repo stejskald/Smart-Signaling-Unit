@@ -1,5 +1,6 @@
-#ifndef __DISPLAY_CONTROLLER_HPP__
-#define __DISPLAY_CONTROLLER_HPP__
+#ifndef __DISPLAY_DRIVER_HPP__
+#define __DISPLAY_DRIVER_HPP__
+#include <cstdint>
 
 // extern to be accessible from other files including this header
 const uint8_t STRIPS_NUMBER = 7;
@@ -44,7 +45,7 @@ typedef struct
 	uint8_t blue = 0;
 } rgb888_pixel_t;
 
-class display_controller
+class display_driver
 {
 public:
 	/**
@@ -79,13 +80,44 @@ public:
 	// 	}
 	// }
 
+
+
+
+
+	/**
+	 * @brief Initialization of pixel hues and led strips
+	 * 
+	 */
+	void Led_strips_init(void);
+
+	/**
+	 * @brief 
+	 * 
+	 */
+	void Update_display_from_buffer(void);
+
+	// /**
+	//  * @brief Converting HSV color space to RGB color space
+	//  *
+	//  * More info here (Wiki): https://en.wikipedia.org/wiki/HSL_and_HSV
+	//  *
+	//  * @param h 
+	//  * @param s 
+	//  * @param v 
+	//  * @param r 
+	//  * @param g 
+	//  * @param b 
+	//  */
+	// void Led_strip_hsv2rgb(uint32_t h, uint32_t s, uint32_t v, uint32_t *r, uint32_t *g, uint32_t *b);
+
 private:
 	/**
 	 * @brief Frame buffer with height equal to count of strips and width of double strips' length.
 	 * 	Store the data for display driver.
 	 * 
 	 */
-	rgb888_pixel_t frame_buffer_[STRIPS_NUMBER][2 * STRIP_LEDS_NUMBER] = {};
+	// BUG ***ERROR*** A stack overflow in task main has been detected.
+	// rgb888_pixel_t frame_buffer_[STRIPS_NUMBER][2 * STRIP_LEDS_NUMBER] = {};
 
 	/**
 	 * @brief Declare the 2D array of 5x7 ASCII symbols.
@@ -354,6 +386,6 @@ private:
 		{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, // 0xfe
 		{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, // 0xff
 	};
-}; /* CMatrix_display */
+}; /* display_driver */
 
-#endif /* __DISPLAY_CONTROLLER_HPP__ */
+#endif /* __DISPLAY_DRIVER_HPP__ */
