@@ -7,32 +7,11 @@ const uint8_t STRIPS_NUMBER = 7;
 const uint8_t STRIP_LEDS_NUMBER = 36;
 
 // /**
-//  * @brief Row coded symbol data in 1-D array
+//  * @brief Pointer to array of (STRIPS_NUMBER) pointers to uint8_t
 //  * 
+//  * @return typedef* 
 //  */
-// typedef struct
-// {
-// 	uint8_t symbol_data_row[7];
-
-
-// 	using symbol_data_t = uint8_t[7];
-// 	operator symbol_data_t*() const
-// 	{
-// 		return nullptr;
-// 	}
-
-// 	operator uint8_t() const
-// 	{
-// 		return *(symbol_data_row);
-// 	}
-// } symbol_data_t;
-
-/**
- * @brief pointer to array of (STRIPS_NUMBER) uint8_t elements
- * 
- * @return typedef* 
- */
-typedef uint8_t *(*p_symbol_data_t)[STRIPS_NUMBER];
+// typedef uint8_t *(*p_symbol_data_t)[STRIPS_NUMBER];
 
 /**
  * @brief Display RGB pixel coded 8:8:8
@@ -52,7 +31,7 @@ public:
 	 * @brief Obtain the symbol data from the font table - ascii_tab_5x7[256][7].
 	 * 	The table contains fonts for symbol codes from 0x20 (space) to 0x7f (✓).
 	 */
-	p_symbol_data_t Get_symbol_data(const char aSymbol) const;
+	// p_symbol_data_t Get_symbol_data(const char aSymbol) const;
 
 	/**
 	 * @brief Display one specified symbol (aSymbol) with background color (aColor) at position (aPosition).
@@ -94,7 +73,7 @@ public:
 	 * @brief 
 	 * 
 	 */
-	void Update_display_from_buffer(void);
+	void Update_display_from_frame_buffer(void);
 
 	// /**
 	//  * @brief Converting HSV color space to RGB color space

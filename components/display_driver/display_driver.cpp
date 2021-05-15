@@ -33,35 +33,50 @@ using std::cout;
 // TODO Remove in final implementation
 #define CHASE_SPEED_MS	(30) // by changing this value can be set the speed of chasing light
 
-const char *TAG = "WS2812B RMT"; // RMT - Remote Control
-const uint8_t symbol_mask = (BIT4 | BIT3 | BIT2 | BIT1 | BIT0);
+const char *TAG = "WS2812B display driver";
 
 // p_symbol_data_t *pSymbol_data; // Row coded symbol data in 1-D array
-p_symbol_data_t display_driver::Get_symbol_data(const char aSymbol) const
-{
-	// get the address of symbol data from the table
-	return (p_symbol_data_t)(display_driver::ascii_tab_5x7_ + aSymbol);
-}
+// p_symbol_data_t display_driver::Get_symbol_data(const char aSymbol) const
+// {
+// 	// get the address of symbol data from the table
+// 	return (p_symbol_data_t)(display_driver::ascii_tab_5x7_ + aSymbol);
+// }
 
-// Frame buffer with height equal to count of strips and width of double strips' length.
+// pointer to array of (STRIPS_NUMBER) pointers to type led_strip_t
+static led_strip_t *(*led_strip_channels)[STRIPS_NUMBER] = nullptr;
+
+static led_strip_t *led_strip_ch0 = nullptr;
+
+void display_driver::Led_strips_init(void)
+{
+	/* Init the RMT peripheral and LED strip configuration */
+	led_strip_ch0 = led_strip_init(RMT_CH0_TX_GPIO, RMT_TX_CHANNEL0, STRIP_LEDS_NUMBER);
+
+	// (*led_strip_channels)[0] = led_strip_init(RMT_CH0_TX_GPIO, RMT_TX_CHANNEL0, STRIP_LEDS_NUMBER);
+	// (*led_strip_channels)[1] = led_strip_init(RMT_CH1_TX_GPIO, RMT_TX_CHANNEL1, STRIP_LEDS_NUMBER);
+	// (*led_strip_channels)[2] = led_strip_init(RMT_CH2_TX_GPIO, RMT_TX_CHANNEL2, STRIP_LEDS_NUMBER);
+	// (*led_strip_channels)[3] = led_strip_init(RMT_CH3_TX_GPIO, RMT_TX_CHANNEL3, STRIP_LEDS_NUMBER);
+	// (*led_strip_channels)[4] = led_strip_init(RMT_CH4_TX_GPIO, RMT_TX_CHANNEL4, STRIP_LEDS_NUMBER);
+	// (*led_strip_channels)[5] = led_strip_init(RMT_CH5_TX_GPIO, RMT_TX_CHANNEL5, STRIP_LEDS_NUMBER);
+	// (*led_strip_channels)[6] = led_strip_init(RMT_CH6_TX_GPIO, RMT_TX_CHANNEL6, STRIP_LEDS_NUMBER);
+} 
+
+// Frame buffer with height equal to count of strips and width of double strips' length
 rgb888_pixel_t frame_buffer[STRIPS_NUMBER][2 * STRIP_LEDS_NUMBER] = {};
+
+// Frame buffer mask with height equal to count of strips and width of strips' length
 bool frame_buffer_mask[STRIPS_NUMBER][STRIP_LEDS_NUMBER] = {};
 
 void display_driver::Disp_letter(const char aSymbol, rgb888_pixel_t aColor, uint8_t aPosition)
 {
 	// TODO Make conversion from rgb565 to rgb888 later
 	
-	// Get_symbol_data
-	const uint8_t (*pSymbol_data)[7] = (display_driver::ascii_tab_5x7_ + aSymbol); // position of desired symbol
+	// Get_symbol_data - Get data of desired symbol
+	const uint8_t (*pSymbol_data)[7] = (display_driver::ascii_tab_5x7_ + aSymbol);
 
 	// cout << "Base address of ascii_tab_5x7_: " << display_driver::ascii_tab_5x7_ << std::endl;
 	// cout << "Address of aSymbol:             " << pSymbol_data << std::endl;
 	// cout << "Size of *pSymbol_data: " << sizeof(*pSymbol_data) << " Should be the same." << std::endl;
-
-	// for (uint8_t i = 0; i < 7; ++i)
-	// {
-	// 	printf("%2x\n", *((*pSymbol_data) + i)); // attempt to all elements of pSymbol_data
-	// }
 
 	// Set the frame_buffer_mask
 	for (uint8_t i = 0; i < STRIPS_NUMBER; ++i)
@@ -72,12 +87,11 @@ void display_driver::Disp_letter(const char aSymbol, rgb888_pixel_t aColor, uint
 			
 			if ((j % 6) == 0)
 			{
-				// add column space of zeros -- not needed
 				mask = BIT4;
 			}
-			printf("%x\n", frame_buffer_mask[i][j]);
+			// printf("%x\n", frame_buffer_mask[i][j]);
 		}
-		printf("\n\n");
+		// printf("\n");
 	}
 
 
@@ -89,35 +103,41 @@ void display_driver::Disp_letter(const char aSymbol, rgb888_pixel_t aColor, uint
 			frame_buffer[i][j] = frame_buffer_mask[i][j] ? (rgb888_pixel_t){0x00, 0x00, 0x00} : aColor;
 		}
 	}
+	printf("Frame buffer filled.\n");
+
+	// Display the letter
+	display_driver::Led_strips_init();
+
+	// for (size_t i = 0; i < STRIPS_NUMBER; ++i)
+	// {
+	// 	if (!((*led_strip_channels) + i)) {
+	// 		ESP_LOGE(TAG, "install WS2812 drivers failed");
+	// 	}
+	
+	// 	// Clear LED strips (turn off all LEDs)
+	// 	ESP_ERROR_CHECK((*((*led_strip_channels) + i))->clear((*((*led_strip_channels) + i)), 100));
+	// }
+
+
+	printf("%p\n", led_strip_ch0);
+
+	// ESP_LOGI(TAG, "Displaying one letter started");
+	// // Loading symbol data into all LED strips "at the same time"
+	// for (uint8_t j = 0; j < STRIP_LEDS_NUMBER; ++j)
+	// {
+	// 	for (uint8_t i = 0; i < STRIPS_NUMBER; ++i)
+	// 	{
+	// 		// Write RGB values to strips' drivers
+	// 		ESP_ERROR_CHECK((*((*led_strip_channels) + i))->set_pixel((*((*led_strip_channels) + i)), j,
+	// 						frame_buffer[i][j].red, frame_buffer[i][j].green, frame_buffer[i][j].blue));
+
+	// 		// Flush RGB values to LEDs
+	// 		ESP_ERROR_CHECK((*((*led_strip_channels) + i))->refresh((*((*led_strip_channels) + i)), 100));
+	// 	}
+	// }
+		
+		
 }
-
-
-
-// static led_strip_t *led_strip_ch0 = nullptr;
-// static led_strip_t *led_strip_ch1 = nullptr;
-// static led_strip_t *led_strip_ch2 = nullptr;
-// static led_strip_t *led_strip_ch3 = nullptr;
-// static led_strip_t *led_strip_ch4 = nullptr;
-// static led_strip_t *led_strip_ch5 = nullptr;
-// static led_strip_t *led_strip_ch6 = nullptr;
-
-void display_driver::Led_strips_init(void)
-{
-	/* Init the RMT peripheral and LED strip configuration */
-	// led_strip_t *led_strip_ch0 = led_strip_init(RMT_CH0_TX_GPIO, RMT_TX_CHANNEL0, STRIP_LEDS_NUMBER);
-	// led_strip_t *led_strip_ch1 = led_strip_init(RMT_CH1_TX_GPIO, RMT_TX_CHANNEL1, STRIP_LEDS_NUMBER);
-	// led_strip_t *led_strip_ch2 = led_strip_init(RMT_CH2_TX_GPIO, RMT_TX_CHANNEL2, STRIP_LEDS_NUMBER);
-	// led_strip_t *led_strip_ch3 = led_strip_init(RMT_CH3_TX_GPIO, RMT_TX_CHANNEL3, STRIP_LEDS_NUMBER);
-	// led_strip_t *led_strip_ch4 = led_strip_init(RMT_CH4_TX_GPIO, RMT_TX_CHANNEL4, STRIP_LEDS_NUMBER);
-	// led_strip_t *led_strip_ch5 = led_strip_init(RMT_CH5_TX_GPIO, RMT_TX_CHANNEL5, STRIP_LEDS_NUMBER);
-	// led_strip_t *led_strip_ch6 = led_strip_init(RMT_CH6_TX_GPIO, RMT_TX_CHANNEL6, STRIP_LEDS_NUMBER);
-}
-
-void display_driver::Update_display_from_buffer(void)
-{
-	;
-}
-
 
 // Converting HSV color space to RGB color space
 // static void led_strip_hsv2rgb(uint32_t h, uint32_t s, uint32_t v, uint32_t *r, uint32_t *g, uint32_t *b)
@@ -199,3 +219,9 @@ void display_driver::Update_display_from_buffer(void)
 // 		start_rgb += 60;
 // 	}
 // }
+
+void display_driver::Update_display_from_frame_buffer(void)
+{
+	;
+}
+
