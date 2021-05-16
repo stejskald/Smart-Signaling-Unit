@@ -81,6 +81,14 @@ private: // private methods
 	void Set_frame_buffer_mask(const uint8_t &aPosition);
 
 	/**
+	 * @brief Algorythm for conversion from rgb565 color to rgb888 color
+	 * 
+	 * @param rgb_565_color RGB color coded 5:6:5
+	 * @return rgb888_pixel_t
+	 */
+	rgb888_pixel_t display_driver::rgb565_to_rgb888(const uint16_t &rgb_565_color);
+
+	/**
 	 * @brief Fill the frame buffer.
 	 * 
 	 * @param aColor Background color

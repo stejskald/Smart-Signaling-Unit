@@ -119,6 +119,9 @@ esp_err_t display_driver::Display_text(const uint16_t (&aText)[3], const rgb888_
 		Set_frame_buffer_mask(pos);
 	}
 	
+	// TODO Make conversion from rgb565 to rgb888 later
+
+
 	/* Fill the frame_buffer */
 	Fill_frame_buffer(aColor);
 
@@ -155,21 +158,42 @@ void display_driver::Set_frame_buffer_mask(const uint8_t &aPosition)
 	ESP_LOGI(TAG, "Set frame buffer mask for symbol at position %d.", aPosition);
 }
 
+rgb888_pixel_t display_driver::rgb565_to_rgb888(const uint16_t &rgb_565_color)
+{
+	// raw values shifted to the left of the least significant byte
+	uint8_t r565_SHL3 = (rgb_565_color & 0xF800) >> 8; // 0b-----000
+	uint8_t g565_SHL2 = (rgb_565_color & 0x07E0) >> 3; // 0b------00
+	uint8_t b565_SHL3 = (rgb_565_color & 0x001F) << 3; // 0b-----000
+
+	// extract 3 (2) the most significant bits of raw values
+	uint8_t r565_SHL3_3MSB_SHR5 = (r565_SHL3 & 0xE0) >> 5; // 0b00000---
+	uint8_t g565_SHL2_2MSB_SHR6 = (g565_SHL2 & 0xC0) >> 6; // 0b000000--
+	uint8_t b565_SHL3_3MSB_SHR5 = (b565_SHL3 & 0xE0) >> 5; // 0b00000---
+
+	// append previously extracted bits to the raw values and move final color values to the correct positions
+	uint8_t r = r565_SHL3 | r565_SHL3_3MSB_SHR5; // 0b--------
+	uint8_t g = g565_SHL2 | g565_SHL2_2MSB_SHR6; // 0b--------
+	uint8_t b = b565_SHL3 | b565_SHL3_3MSB_SHR5; // 0b--------
+
+	return (rgb888_pixel_t){r, g, b};
+}
+
 void display_driver::Fill_frame_buffer(const rgb888_pixel_t &aColor)
 {
-	// TODO Make conversion from rgb565 to rgb888 later
-
 	for (uint8_t i = 0; i < STRIPS_NUMBER; ++i)
 	{
 		for (uint8_t j = 0, k = 36; j < STRIP_LEDS_NUMBER; ++j, ++k) // Filling the first half of frame_buffer
 		{
-			uint8_t symbol_red = aColor.green + aColor.blue;
-			uint8_t symbol_green = aColor.red + aColor.blue;
-			uint8_t symbol_blue = aColor.red + aColor.green;
-			// printf("%2x\t%2x\t%2x\n", aColor.red, aColor.green, aColor.blue);
-			// printf("%2x\t%2x\t%2x\n", symbol_red, symbol_green, symbol_blue);
-			frame_buffer[i][j] = frame_buffer_mask[i][j] ? (rgb888_pixel_t){symbol_red, symbol_green, symbol_blue} : aColor;
+			// Reversed colors - negative
+			uint8_t symbol_red = ~aColor.red;
+			uint8_t symbol_green = ~aColor.green;
+			uint8_t symbol_blue = ~aColor.blue;
+			rgb888_pixel_t symbol_color = {symbol_red, symbol_green, symbol_blue};
+
+			frame_buffer[i][j] = frame_buffer_mask[i][j] ? symbol_color : aColor;
 			frame_buffer[i][k] = frame_buffer[i][j]; // Filling the second half of frame_buffer
+			// printf("%2x\t%2x\t%2x\n", aColor.red, aColor.green, aColor.blue);
+			// printf("%2x\t%2x\t%2x\n\n", symbol_color.red, symbol_color.green, symbol_color.blue);
 		}
 	}
 	ESP_LOGI(TAG, "Frame buffer filled.");
