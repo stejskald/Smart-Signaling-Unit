@@ -2,9 +2,15 @@
 #define __DISPLAY_DRIVER_HPP__
 #include <cstdint>
 
-// extern to be accessible from other files including this header
-const uint8_t STRIPS_NUMBER = 7;
-const uint8_t STRIP_LEDS_NUMBER = 36;
+constexpr uint8_t STRIPS_NUMBER = 7;
+constexpr uint8_t STRIP_LEDS_NUMBER = 36;
+
+/**
+ * @brief Pointer to symbol data (array of 7 uint8_t elements).
+ * 
+ * @return typedef const uint8_t(*)[7] 
+ */
+typedef const uint8_t (*p_symbol_data_t)[7];
 
 /**
  * @brief Display RGB pixel coded 8:8:8
@@ -17,29 +23,38 @@ typedef struct
 	uint8_t blue = 0;
 } rgb888_pixel_t;
 
+/**
+ * @brief Reference to text to display (array of 6 symbols (uint8_t elements)).
+ * 
+ * @return typedef uint8_t(&)[6] 
+ */
+typedef const char (&r_symbols_t)[6];
+
 class display_driver
 {
 public: // public methods
-	/**
-	 * @brief Obtain the symbol data from the font table - ascii_tab_5x7[256][7].
-	 * 	The table contains fonts for symbol codes from 0x20 (space) to 0x7f (✓).
-	 */
-	// p_symbol_data_t Get_symbol_data(const char aSymbol) const;
-
 	/**
 	 * @brief Display one specified symbol (aSymbol) with background color (aColor) at position (aPosition).
 	 * 
 	 * @param aSymbol 
 	 * @param aColor 
 	 * @param aPosition 
+	 * @return esp_err_t 
 	 */
-	void Disp_letter(const char &aSymbol, const rgb888_pixel_t &aColor, const uint8_t &aPosition);
+	esp_err_t Display_symbol(const char &aSymbol, const rgb888_pixel_t &aColor, const uint8_t &aPosition);
+
+	/**
+	 * @brief Display the specified text (aText) with background color (aColor).
+	 * 
+	 * @param aText 
+	 * @param aColor 
+	 * @return esp_err_t 
+	 */
+	esp_err_t Display_text(const uint16_t (&aText)[3], const rgb888_pixel_t &aColor);
 
 
 
-	// Public methods:
-		// Disp_text ("text",color) // position at begin
-		// Rotate_text (dir)
+	// Rotate_text (dir)
 
 
 	// Led_strip_driver_task()
@@ -47,47 +62,61 @@ public: // public methods
 
 
 
+private: // private methods
 
 	/**
-	 * @brief Initialization of pixel hues and led strips
+	 * @brief Obtain the symbol data from the font table - ascii_tab_5x7[256][7].
+	 * 	The table contains fonts for symbol codes from 0x20 (space) to 0x7f (✓).
+	 * 
+	 * @param aSymbol Symbol to display.
+	 * @return p_symbol_data_t
+	 */
+	p_symbol_data_t Get_symbol_data(const char *aSymbol) const;
+
+	/**
+	 * @brief Set the frame buffer mask for actual symbol.
+	 * 
+	 * @param aPosition Position of symbol on the display (range 1-6).
+	 */
+	void Set_frame_buffer_mask(const uint8_t &aPosition);
+
+	/**
+	 * @brief Fill the frame buffer.
+	 * 
+	 * @param aColor Background color
+	 */
+	void Fill_frame_buffer(const rgb888_pixel_t &aColor);
+
+	/**
+	 * @brief Initialization of LED strips WS2812B
 	 * 
 	 */
 	void Led_strips_init(void);
 
 	/**
-	 * @brief 
+	 * @brief Extract symbols stored in holding registers.
+	 * 
+	 * @param aText Text stored in holding registers
+	 * @param aSymbols Reference to array of 6 chars to store the symbols
+	 */
+	void Extract_symbols_from_holding_regs(const uint16_t (&aText)[3], char (&aSymbols)[6]);
+
+	/**
+	 * @brief Update display from data stored in `frame_buffer`
 	 * 
 	 */
 	void Update_display_from_frame_buffer(void);
 
-	// /**
-	//  * @brief Converting HSV color space to RGB color space
-	//  *
-	//  * More info here (Wiki): https://en.wikipedia.org/wiki/HSL_and_HSV
-	//  *
-	//  * @param h 
-	//  * @param s 
-	//  * @param v 
-	//  * @param r 
-	//  * @param g 
-	//  * @param b 
-	//  */
-	// void Led_strip_hsv2rgb(uint32_t h, uint32_t s, uint32_t v, uint32_t *r, uint32_t *g, uint32_t *b);
-
-private: // private methods
-
-	// display_driver::Get_symbol_data(const char &aSymbol) const;
-
 public: // public data
 
+
 private: // private data
-	/**
-	 * @brief Frame buffer with height equal to count of strips and width of double strips' length.
-	 * 	Store the data for display driver.
-	 * 
-	 */
-	// BUG ***ERROR*** A stack overflow in task main has been detected.
-	// rgb888_pixel_t frame_buffer_[STRIPS_NUMBER][2 * STRIP_LEDS_NUMBER] = {};
+
+	static bool frame_buffer_mask[STRIPS_NUMBER][STRIP_LEDS_NUMBER];
+
+	static rgb888_pixel_t frame_buffer[STRIPS_NUMBER][2 * STRIP_LEDS_NUMBER];
+
+	static p_symbol_data_t pSymbol_data;
 
 	/**
 	 * @brief Declare the 2D array of 5x7 ASCII symbols.
