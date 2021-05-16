@@ -6,6 +6,8 @@
 #define __MB_TCP_SERVER_HPP__
 #include "modbus_data_types.hpp"
 
+// TODO Make class mb_tcp_server
+
 /**
  * @brief Initialization of Modbus TCP server
  * 
@@ -23,7 +25,7 @@ void setup_reg_data(void);
  * 
  * @param arg 
  */
-void mb_server_operation(void *arg);
+void mb_server_operation(void *arg); // TODO Needed arg?
 
 /**
  * @brief Stop the Modbus TCP server

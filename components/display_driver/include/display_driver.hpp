@@ -30,36 +30,58 @@ typedef struct
  */
 typedef const char (&r_symbols_t)[6];
 
+// TODO Where to place led_display_driver_operation ???
+/**
+ * @brief The main operation of display driver
+ * 
+ */
+void led_display_driver_operation(void *arg);
+
 class display_driver
 {
 public: // public methods
+
+	/**
+	 * @brief Initialization of LED strips WS2812B
+	 * 
+	 */
+	void Led_strips_init(void);
+
 	/**
 	 * @brief Display one specified symbol (aSymbol) with background color (aColor) at position (aPosition).
 	 * 
-	 * @param aSymbol 
-	 * @param aColor 
-	 * @param aPosition 
+	 * @param aSymbol Symbol to display
+	 * @param aColor Background color to display
+	 * @param aPosition Position of the displayed symbol (1-6)
 	 * @return esp_err_t 
 	 */
-	esp_err_t Display_symbol(const char &aSymbol, const rgb888_pixel_t &aColor, const uint8_t &aPosition);
+	esp_err_t Display_symbol(const char &aSymbol, const uint16_t &aColor, const uint8_t &aPosition);
 
 	/**
 	 * @brief Display the specified text (aText) with background color (aColor).
 	 * 
-	 * @param aText 
-	 * @param aColor 
+	 * @param aText Text to display
+	 * @param aColor Background color to display
 	 * @return esp_err_t 
 	 */
-	esp_err_t Display_text(const uint16_t (&aText)[3], const rgb888_pixel_t &aColor);
+	esp_err_t Display_text(const uint16_t (&aText)[3], const uint16_t &aColor);
 
+	/**
+	 * @brief Blink the display.
+	 * 
+	 * @param aBlink_freq Frequency of blinking in miliseconds
+	 * @return esp_err_t 
+	 */
+	esp_err_t Blink(const size_t &aBlink_freq);
 
-
-	// Rotate_text (dir)
-
-
-	// Led_strip_driver_task()
-
-
+	/**
+	 * @brief Rotate the displaying text.
+	 * 
+	 * @param aRotation_speed Number of cycles per second (MAX 1 rotation per second) // TODO Verify!
+	 * @param aRotation_dir Direction of text rotation (true = right)
+	 * @return esp_err_t 
+	 */
+	esp_err_t Rotate_text(const uint8_t &aRotation_speed, const bool aRotation_dir);
 
 
 private: // private methods
@@ -74,6 +96,14 @@ private: // private methods
 	p_symbol_data_t Get_symbol_data(const char *aSymbol) const;
 
 	/**
+	 * @brief Extract symbols stored in holding registers.
+	 * 
+	 * @param aText Text stored in holding registers
+	 * @param aSymbols Reference to array of 6 chars to store the symbols
+	 */
+	void Extract_symbols_from_holding_regs(const uint16_t (&aText)[3], char (&aSymbols)[6]);
+
+	/**
 	 * @brief Set the frame buffer mask for actual symbol.
 	 * 
 	 * @param aPosition Position of symbol on the display (range 1-6).
@@ -83,37 +113,30 @@ private: // private methods
 	/**
 	 * @brief Algorythm for conversion from rgb565 color to rgb888 color
 	 * 
-	 * @param rgb_565_color RGB color coded 5:6:5
+	 * @param rgb_565_color RGB background color coded 5:6:5 for conversion to 8:8:8
 	 * @return rgb888_pixel_t
 	 */
-	rgb888_pixel_t display_driver::rgb565_to_rgb888(const uint16_t &rgb_565_color);
+	rgb888_pixel_t rgb565_to_rgb888(const uint16_t &rgb_565_color);
 
 	/**
 	 * @brief Fill the frame buffer.
 	 * 
-	 * @param aColor Background color
+	 * @param aColor RGB background color coded 8:8:8
 	 */
 	void Fill_frame_buffer(const rgb888_pixel_t &aColor);
-
-	/**
-	 * @brief Initialization of LED strips WS2812B
-	 * 
-	 */
-	void Led_strips_init(void);
-
-	/**
-	 * @brief Extract symbols stored in holding registers.
-	 * 
-	 * @param aText Text stored in holding registers
-	 * @param aSymbols Reference to array of 6 chars to store the symbols
-	 */
-	void Extract_symbols_from_holding_regs(const uint16_t (&aText)[3], char (&aSymbols)[6]);
 
 	/**
 	 * @brief Update display from data stored in `frame_buffer`
 	 * 
 	 */
 	void Update_display_from_frame_buffer(void);
+
+	/**
+	 * @brief Display routine: Color conversion, filling the frame_buffer, displayng the symbol/text.
+	 * 
+	 * @param aColor RGB background color coded 5:6:5 for conversion to 8:8:8
+	 */
+	void Display_driver_routine(const uint16_t &aColor);
 
 public: // public data
 

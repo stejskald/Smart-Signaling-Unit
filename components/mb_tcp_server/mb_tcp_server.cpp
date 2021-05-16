@@ -111,7 +111,7 @@ void setup_reg_data(void)
 	mb_holding_registers.module6_state_id	= 5;
 	mb_holding_registers.module7_state_id	= 6;
 
-// TODO Other modules' color...
+	// TODO Other modules' color...
 	mb_holding_registers.module1_color.red		= 0b11111;
 	mb_holding_registers.module1_color.green	= 0b000000;
 	mb_holding_registers.module1_color.blue		= 0b00000;
