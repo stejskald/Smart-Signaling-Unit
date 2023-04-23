@@ -1,2 +1,3 @@
-# SSU
-BP - Smart signaling unit
+# Smart signaling unit
+
+Bachelor thesis
